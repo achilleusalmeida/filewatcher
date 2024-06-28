@@ -15,7 +15,7 @@ public class MyFileChangeListener implements FileChangeListener {
         for(ChangedFiles cfiles:changeSet) {
             for(ChangedFile cfile:cfiles.getFiles()) {
                 log.info("File Name {} Operation {}",cfile.getFile().getName(),cfile.getType());
-                //GCPStorageUtils.getData(cfile.getFile().getName());
+                log.info("Last Modified : {}",GCPStorageUtils.toLocalDateDime(cfile.getFile().lastModified()));
             }
         }
     }

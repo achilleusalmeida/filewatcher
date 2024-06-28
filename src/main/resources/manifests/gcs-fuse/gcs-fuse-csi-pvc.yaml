@@ -12,7 +12,8 @@ spec:
     namespace: default
     name: gcs-fuse-csi-static-pvc
   mountOptions:
-    - implicit-dirs
+    # Specify the name of the directory within the bucket which you want to mount
+    - only-dir=invoices
   csi:
     driver: gcsfuse.csi.storage.gke.io
     volumeHandle: BUCKET_NAME

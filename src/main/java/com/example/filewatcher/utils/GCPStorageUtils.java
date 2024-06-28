@@ -7,10 +7,7 @@ import com.google.api.gax.paging.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 @Slf4j
 public class GCPStorageUtils {
@@ -29,5 +26,9 @@ public class GCPStorageUtils {
         ZonedDateTime zoned = offsetDateTime.atZoneSameInstant(ZoneId.of("Asia/Kolkata"));
         LocalDateTime athensWallTime = zoned.toLocalDateTime();
         return athensWallTime.toString();
+    }
+
+    public static String toLocalDateDime(Long timestamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.of("Asia/Kolkata")).toString();
     }
 }
