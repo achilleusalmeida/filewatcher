@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: filewatcher-multishare-deployment
+spec:
+ replicas: 3
+ selector:
+   matchLabels:
+     app: filewatcher-multishare
+ template:
+   metadata:
+     labels:
+       app: filewatcher-multishare
+   spec: 
+     containers:
+       - name: filewatcher-multishare-container
+         image: achilleusdocs/filewatcher:v2.0
+         imagePullPolicy: Always
+         ports:
+           - containerPort: 8080
+         volumeMounts:
+           - mountPath: /vol1
+             name: mypvc
+     volumes:
+       - name: mypvc
+         persistentVolumeClaim:
+           claimName: test-pvc-fs
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+ name: filewatcher-multishare
+spec:
+ selector:
+   app: filewatcher-multishare
+ ports:
+   - port: 80
+     targetPort: 8080
+ type: LoadBalancer
+
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+ name: test-pvc-fs
+spec:
+ accessModes:
+   - ReadWriteMany
+ storageClassName: enterprise-multishare-rwx
+ resources:
+   requests:
+     storage: 100Gi

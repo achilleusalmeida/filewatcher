@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: filewatcher
+  cloud:
+    gcp:
+      project-id: ENTER_PROJECT_ID

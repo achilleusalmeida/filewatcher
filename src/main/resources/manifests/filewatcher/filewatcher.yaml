@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filewatcher-deployment
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: filewatcher
+  template:
+    metadata:
+      labels:
+        app: filewatcher
+    spec:  
+      containers:
+        - name: filewatcher-container
+          image: achilleusdocs/filewatcher:v2.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /vol1
+              name: vol1
+      volumes:
+        - name: vol1
+          persistentVolumeClaim:
+            claimName: filestore-pvc
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filewatcher
+spec:
+  selector:
+    app: filewatcher
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer

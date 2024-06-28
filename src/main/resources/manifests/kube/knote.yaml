@@ -1,0 +1,43 @@
+# apiVersion : Specifies the Kubernetes API version. In this case, it’s using the “apps/v1” API version, which is appropriate for Deployments.
+# kind: Specifies the type of Kubernetes resource. Here, it’s “Deployment,” indicating that this configuration file is defining a Deployment.
+# metadata.name : A Deployment named knote-deployment is created, indicated by the .metadata.name field. This name will become the basis for the ReplicaSets and Pods which are created later
+# spec : This section defines the desired state of the Deployment.
+# spec.replicas : Specifies that you want to run one replicas of your application
+# spec.selector : Defines how the created ReplicaSet finds which Pods to manage. In this case, you select a label that is defined in the Pod template (app: knote). 
+# spec.template : Defines the pod template used for creating new pods.
+# spec.template.metadata.label The Pods are labeled app: knote using the .metadata.labels field.
+# template.spec : Indicates that the Pods run one container, knote, which runs the specified Docker Hub image.
+# template.spec.containers : This section specifies the containers to run in the pod.  
+# template.spec.containers.port : Indicates that the container will listen on port 80.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knote-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: knote
+  template:
+    metadata:
+      labels:
+        app: knote
+    spec:  
+      containers:
+        - name: knote-container
+          image: achilleusdocs/spring-boot-docker:v1.0
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: knote
+spec:
+  selector:
+    app: knote
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer
