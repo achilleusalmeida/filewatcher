@@ -1,34 +1,33 @@
 package com.example.filewatcher.utils;
 
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import com.google.api.gax.paging.Page;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.time.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
-@Slf4j
 public class GCPStorageUtils {
-    public static void getData(String fileName) {
-        Storage storage = StorageOptions.newBuilder().setProjectId("PROVIDE_PROJECT_ID").build().getService();
-        Page<Blob> blobs = storage.list("PROVIDE_BUCKET_NAME");
-        for (Blob blob : blobs.iterateAll()) {
-            if (StringUtils.equals(fileName,blob.getName())){
-                log.info("Created timestamp: {} ",toLocalDateDime(blob.getCreateTimeOffsetDateTime()));
-                log.info("Updated timestamp: {} ",toLocalDateDime(blob.getUpdateTimeOffsetDateTime()));
-            }
-        }
-    }
-
-    private static String toLocalDateDime(OffsetDateTime offsetDateTime) {
-        ZonedDateTime zoned = offsetDateTime.atZoneSameInstant(ZoneId.of("Asia/Kolkata"));
-        LocalDateTime athensWallTime = zoned.toLocalDateTime();
-        return athensWallTime.toString();
-    }
+    private static final Logger log = LogManager.getLogger(GCPStorageUtils.class);
 
     public static String toLocalDateDime(Long timestamp) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.of("Asia/Kolkata")).toString();
+    }
+
+    public static void moveFile(File originalFile,String transactionId) {
+        Path source = Paths.get(originalFile.getAbsolutePath());
+        Path newDir = Paths.get("/vol2/success/");
+        log.info("Moving file [{}] to [{}] transactionId {}",originalFile.getAbsolutePath(),newDir,transactionId);
+        try {
+            Files.move(source, newDir.resolve(source.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            log.info("File uploaded successfully to [{}] transactionId {}", newDir,transactionId);
+        }catch (NoSuchFileException e) {
+            log.info("Destination directory [{}] does not exist transactionId {}",newDir,transactionId);
+        }catch (IOException e) {
+            log.info("Failed to upload file transactionId {}",transactionId);
+        }
     }
 }

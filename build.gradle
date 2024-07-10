@@ -17,6 +17,10 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	all {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	}
+	runtime.exclude group: "ch.qos.logback", module: "logback-classic"
 }
 
 repositories {
@@ -32,11 +36,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.google.cloud:google-cloud-storage:2.40.0'
 	compileOnly 'org.projectlombok:lombok'
-	//developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation'org.springframework.boot:spring-boot-devtools'
+	implementation 'commons-io:commons-io:2.16.1'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-logging:3.3.1'
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2:3.3.1'
+	implementation 'org.apache.logging.log4j:log4j-api:2.23.1'
+	implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
+	implementation 'io.micrometer:micrometer-registry-stackdriver:1.13.1'
 }
 
 dependencyManagement {

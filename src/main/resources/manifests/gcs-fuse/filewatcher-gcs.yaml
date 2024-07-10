@@ -2,9 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: filewatcher-gcs-deployment
-  namespace: default
 spec:
-  replicas: 10
+  replicas: 1
   selector:
     matchLabels:
       app: filewatcher-gcs
@@ -14,22 +13,30 @@ spec:
         gke-gcsfuse/volumes: "true"
       labels:
         app: filewatcher-gcs
+        app_version: "1.0"
+        environment: dev
+        app_name: filewatcher-gcs
     spec:
       serviceAccountName: SERVICE_ACCOUNT_NAME
       containers:
         - name: filewatcher-gcs-container
-          image: achilleusdocs/filewatcher:v4.0
+          image: achilleusdocs/filewatcher:v7.27
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
           volumeMounts:
             - mountPath: /vol1
               name: gcs-fuse-csi-static
+            - mountPath: /vol2
+              name: gcs-fuse-csi-static-fuse2
       volumes:
         - name: gcs-fuse-csi-static
           persistentVolumeClaim:
             claimName: gcs-fuse-csi-static-pvc
-          
+        - name: gcs-fuse-csi-static-fuse2
+          persistentVolumeClaim:
+            claimName: gcs-fuse2-csi-static-pvc
+
 ---
 apiVersion: v1
 kind: Service

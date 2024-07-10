@@ -1,0 +1,13 @@
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern='{"timestamp": "%d{yyyy-MM-dd HH:mm:ss}", "message": "%M | %msg", "severity": "%level"}%n' />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Root>
+    </Loggers>
+</Configuration>

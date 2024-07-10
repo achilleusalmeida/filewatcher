@@ -1,6 +1,8 @@
 spring:
   application:
     name: filewatcher
+  main:
+    banner-mode: "off"
   cloud:
     gcp:
       project-id: ENTER_PROJECT_ID
